@@ -6,7 +6,7 @@ import 'package:flutter_application_1/screens/welcome_screen.dart';
 void main() {
   runApp(MyApp());
 }
-
+//This is for Splash Screen
 class MyApp  extends StatelessWidget {
   @override
   Widget build(BuildContext context){
