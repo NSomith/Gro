@@ -81,6 +81,7 @@ class AuthProvider with ChangeNotifier {
                       }
                     } catch (e) {
                       this.error = "cant do it";
+                      notifyListeners();
                       print(error);
                       Navigator.of(context).pop();
                     }

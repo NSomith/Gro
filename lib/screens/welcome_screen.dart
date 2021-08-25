@@ -7,7 +7,7 @@ import 'onBoarding_screen.dart';
 class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final auth  = Provider.of<AuthProvider>(context);
+    final auth = Provider.of<AuthProvider>(context);
     bool _validPhoneno = false;
     var _phoneNumberController = TextEditingController();
     void showBottomSheet(context) {
@@ -21,6 +21,18 @@ class WelcomeScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Visibility(
+                            visible: auth.error == 'Invalid OTP' ? true : false,
+                            child: Container(
+                              child: Column(
+                                children: [
+                                  Text(auth.error),
+                                  SizedBox(
+                                    height: 3,
+                                  )
+                                ],
+                              ),
+                            )),
                         Text(
                           "Login",
                           style: TextStyle(
@@ -65,8 +77,11 @@ class WelcomeScreen extends StatelessWidget {
                                       ? Theme.of(context).primaryColor
                                       : Colors.grey,
                                   onPressed: () {
-                                    String number = "+91${_phoneNumberController.text}";
-                                    auth.verifyPhone(context, number);
+                                    String number =
+                                        "+91${_phoneNumberController.text}";
+                                    auth.verifyPhone(context, number).then((value){
+                                      _phoneNumberController.clear();
+                                    });
                                   },
                                   child: Text(
                                     _validPhoneno
