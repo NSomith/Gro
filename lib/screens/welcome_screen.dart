@@ -1,77 +1,89 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'onBoarding_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  bool _validPhoneno = false;
-  void showBottomSheet(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) =>
-            StatefulBuilder(builder: (context, StateSetter myState) {
-              return Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Login",
-                        style:
-                        TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "Enter your phone number ",
-                        style: TextStyle(fontSize: 12),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      TextField(
-                        decoration: InputDecoration(
-                            prefix: Text("+91"), labelText: "10 digits number"),
-                        autofocus: true,
-                        keyboardType: TextInputType.phone,
-                        maxLength: 10,
-                        onChanged: (value){
-                          if(value.length == 10){
-                            myState((){
-                              _validPhoneno = true;
-                            });
-                          }else{
-                            myState((){
-                              _validPhoneno = false;
-                            });
-                          }
-                        },
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(children: [
-                        Expanded(
-                          child: AbsorbPointer(
-                            absorbing:_validPhoneno?false:true,
-                            child: FlatButton(
-                                color: _validPhoneno?Theme.of(context).primaryColor:Colors.grey,
-                                onPressed: () {},
-                                child: Text(
-                                  _validPhoneno?"Continue":
-                                  "Enter Phone number",
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                          ),
-                        ),
-                      ])
-                    ],
-                  ),
-                ),
-              );
-            }));
-  }
-
   @override
   Widget build(BuildContext context) {
+    final auth  = Provider.of<AuthProvider>(context);
+    bool _validPhoneno = false;
+    var _phoneNumberController = TextEditingController();
+    void showBottomSheet(context) {
+      showModalBottomSheet(
+          context: context,
+          builder: (context) =>
+              StatefulBuilder(builder: (context, StateSetter myState) {
+                return Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Login",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "Enter your phone number ",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        TextField(
+                          decoration: InputDecoration(
+                              prefix: Text("+91"),
+                              labelText: "10 digits number"),
+                          autofocus: true,
+                          keyboardType: TextInputType.phone,
+                          maxLength: 10,
+                          controller: _phoneNumberController,
+                          onChanged: (value) {
+                            if (value.length == 10) {
+                              myState(() {
+                                _validPhoneno = true;
+                              });
+                            } else {
+                              myState(() {
+                                _validPhoneno = false;
+                              });
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(children: [
+                          Expanded(
+                            child: AbsorbPointer(
+                              absorbing: _validPhoneno ? false : true,
+                              child: FlatButton(
+                                  color: _validPhoneno
+                                      ? Theme.of(context).primaryColor
+                                      : Colors.grey,
+                                  onPressed: () {
+                                    String number = "+91${_phoneNumberController.text}";
+                                    auth.verifyPhone(context, number);
+                                  },
+                                  child: Text(
+                                    _validPhoneno
+                                        ? "Continue"
+                                        : "Enter Phone number",
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                            ),
+                          ),
+                        ])
+                      ],
+                    ),
+                  ),
+                );
+              }));
+    }
+
     return Scaffold(
       body: Padding(
           padding: EdgeInsets.all(20.0),
