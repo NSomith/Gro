@@ -74,8 +74,7 @@ class AuthProvider with ChangeNotifier {
                       _createUser(id: user.uid, number: user.phoneNumber);
                       if (user != null) {
                         Navigator.of(context).pop();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => HomeScreen()));
+                        Navigator.pushReplacementNamed(context, HomeScreen.id);
                       } else {
                         print('logn in failed');
                       }

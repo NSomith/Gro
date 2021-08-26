@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/provider/auth_provider.dart';
+import 'package:flutter_application_1/provider/location_provider.dart';
+import 'package:flutter_application_1/screens/map_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'onBoarding_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
+  static const String id = 'welcome-screen';
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
+    final locationData = Provider.of<LocationProvider>(context, listen: false);
     bool _validPhoneno = false;
     var _phoneNumberController = TextEditingController();
     void showBottomSheet(context) {
@@ -79,7 +83,9 @@ class WelcomeScreen extends StatelessWidget {
                                   onPressed: () {
                                     String number =
                                         "+91${_phoneNumberController.text}";
-                                    auth.verifyPhone(context, number).then((value){
+                                    auth
+                                        .verifyPhone(context, number)
+                                        .then((value) {
                                       _phoneNumberController.clear();
                                     });
                                   },
@@ -126,7 +132,14 @@ class WelcomeScreen extends StatelessWidget {
                     height: 20,
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await locationData.getCurrentPostion();
+                      if (locationData.permissionallowed) {
+                        Navigator.pushReplacementNamed(context, MapScreen.id);
+                      } else {
+                        print("permission not allowed");
+                      }
+                    },
                     child: Text(
                       "Set Delivery Location",
                       style: TextStyle(color: Colors.white),
